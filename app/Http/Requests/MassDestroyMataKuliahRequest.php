@@ -2,12 +2,11 @@
 
 namespace App\Http\Requests;
 
-use App\User;
 use Gate;
 use Illuminate\Foundation\Http\FormRequest;
 use Symfony\Component\HttpFoundation\Response;
 
-class StoreUserRequest extends FormRequest
+class MassDestroyMataKuliahRequest extends FormRequest
 {
     public function authorize()
     {
@@ -17,13 +16,8 @@ class StoreUserRequest extends FormRequest
     public function rules()
     {
         return [
-            'name'     => [
-                'required'],
-            'email'    => [
-                'required',
-                'unique:users'],
-            'password' => [
-                'required'],
+            'ids'   => 'required|array',
+            'ids.*' => 'exists:mata_kuliah,id',
         ];
     }
 }

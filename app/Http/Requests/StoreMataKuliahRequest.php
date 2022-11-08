@@ -2,12 +2,12 @@
 
 namespace App\Http\Requests;
 
-use App\User;
+use App\SchoolClass;
 use Gate;
 use Illuminate\Foundation\Http\FormRequest;
 use Symfony\Component\HttpFoundation\Response;
 
-class StoreUserRequest extends FormRequest
+class StoreMataKuliahRequest extends FormRequest
 {
     public function authorize()
     {
@@ -17,12 +17,11 @@ class StoreUserRequest extends FormRequest
     public function rules()
     {
         return [
-            'name'     => [
+            'nama' => [
                 'required'],
-            'email'    => [
-                'required',
-                'unique:users'],
-            'password' => [
+            'kode' => [
+                'required'],
+            'sks' => [
                 'required'],
         ];
     }

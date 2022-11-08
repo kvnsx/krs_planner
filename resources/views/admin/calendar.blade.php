@@ -17,22 +17,21 @@
 
                     <table class="table table-bordered">
                         <thead>
-                            <th width="125">Time</th>
-                            @foreach($weekDays as $day)
-                                <th>{{ $day }}</th>
+                            <th width="120">Waktu</th>
+                            @foreach($hari as $harian)
+                                <th>{{ $harian }}</th>
                             @endforeach
                         </thead>
                         <tbody>
-                            @foreach($calendarData as $time => $days)
+                            @foreach($calendarData as $time => $hari)
                                 <tr>
                                     <td>
                                         {{ $time }}
                                     </td>
-                                    @foreach($days as $value)
+                                    @foreach($hari as $value)
                                         @if (is_array($value))
                                             <td rowspan="{{ $value['rowspan'] }}" class="align-middle text-center" style="background-color:#f0f0f0">
-                                                {{ $value['class_name'] }}<br>
-                                                Teacher: {{ $value['teacher_name'] }}
+                                                {{ $value['nama_mata_kuliah'] }}<br>
                                             </td>
                                         @elseif ($value === 1)
                                             <td></td>

@@ -33,33 +33,12 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'class_id',
         'created_at',
         'updated_at',
         'deleted_at',
         'remember_token',
         'email_verified_at',
     ];
-
-    public function getIsAdminAttribute()
-    {
-        return $this->roles()->where('id', 1)->exists();
-    }
-
-    public function getIsTeacherAttribute()
-    {
-        return $this->roles()->where('id', 3)->exists();
-    }
-
-    public function getIsStudentAttribute()
-    {
-        return $this->roles()->where('id', 4)->exists();
-    }
-
-    public function teacherLessons()
-    {
-        return $this->hasMany(Lesson::class, 'teacher_id', 'id');
-    }
 
     public function getEmailVerifiedAtAttribute($value)
     {
@@ -83,13 +62,8 @@ class User extends Authenticatable
         $this->notify(new ResetPassword($token));
     }
 
-    public function roles()
+    function mataKuliah()
     {
-        return $this->belongsToMany(Role::class);
-    }
-
-    function class()
-    {
-        return $this->belongsTo(SchoolClass::class, 'class_id');
+        return $this->belongsTo(MataKuliah::class, 'mata_kuliah_id');
     }
 }

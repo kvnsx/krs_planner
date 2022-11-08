@@ -2,16 +2,28 @@
 
 namespace App\Services;
 
+use App\JadwalKuliah;
 use App\Lesson;
+use Carbon\Carbon;
 
 class CalendarService
 {
-    public function generateCalendarData($weekDays)
+    public function generateCalendarData($harian, $timeIntervals)
     {
         $calendarData = [];
-        $timeRange = (new TimeService)->generateTimeRange(config('app.calendar.start_time'), config('app.calendar.end_time'));
-        $lessons   = Lesson::with('class', 'teacher')
-            ->calendarByRoleOrClassId()
+        $timeRange = [];
+
+        foreach ($timeIntervals as $timeInterval)
+        {
+            array_push($timeRange, [
+                'start' => $timeInterval['start_time'],
+                'end' => $timeInterval['end_time']
+            ]
+            );
+        }
+
+        $jadwalKuliah = JadwalKuliah::with('mataKuliah')
+            ->calendarByMataKuliahId()
             ->get();
 
         foreach ($timeRange as $time)
@@ -19,19 +31,18 @@ class CalendarService
             $timeText = $time['start'] . ' - ' . $time['end'];
             $calendarData[$timeText] = [];
 
-            foreach ($weekDays as $index => $day)
+            foreach ($harian as $index => $hari)
             {
-                $lesson = $lessons->where('weekday', $index)->where('start_time', $time['start'])->first();
+                $jadwal = $jadwalKuliah->where('hari', $hari)->where('start_time', $time['start'])->first();
 
-                if ($lesson)
+                if ($jadwal)
                 {
                     array_push($calendarData[$timeText], [
-                        'class_name'   => $lesson->class->name,
-                        'teacher_name' => $lesson->teacher->name,
-                        'rowspan'      => $lesson->difference/30 ?? ''
+                        'nama_mata_kuliah'   => $jadwal->mataKuliah->nama,
+                        'rowspan'            => $jadwal->difference/Carbon::parse($time['start'])->diffInMinutes($time['end']) ?? ''
                     ]);
                 }
-                else if (!$lessons->where('weekday', $index)->where('start_time', '<', $time['start'])->where('end_time', '>=', $time['end'])->count())
+                else if (!$jadwalKuliah->where('hari', $hari)->where('start_time', '<', $time['start'])->where('end_time', '>=', $time['end'])->count())
                 {
                     array_push($calendarData[$timeText], 1);
                 }

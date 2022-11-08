@@ -3,16 +3,18 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Lesson;
+use App\JadwalKuliah;
 use App\Services\CalendarService;
+use App\TimeInterval;
 
 class CalendarController extends Controller
 {
     public function index(CalendarService $calendarService)
     {
-        $weekDays     = Lesson::WEEK_DAYS;
-        $calendarData = $calendarService->generateCalendarData($weekDays);
+        $hari     = JadwalKuliah::HARI;
+        $timeIntervals = TimeInterval::all()->toArray();
+        $calendarData = $calendarService->generateCalendarData($hari, $timeIntervals);
 
-        return view('admin.calendar', compact('weekDays', 'calendarData'));
+        return view('admin.calendar', compact('hari', 'calendarData'));
     }
 }
